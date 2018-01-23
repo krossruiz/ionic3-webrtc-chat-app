@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
+import { XirsysV3Provider } from '../../providers/xirsys-v3/xirsys-v3';
 //import * as socketio from 'socket.io-client';
 
 @Component({
@@ -15,7 +16,8 @@ export class HomePage {
 
   constructor(
 		public navCtrl: NavController,
-    private androidPermissions: AndroidPermissions
+    private androidPermissions: AndroidPermissions,
+    public xirsysV3: XirsysV3Provider
 	) {
     console.log("hello??");
 
@@ -59,7 +61,14 @@ export class HomePage {
 		// 	.catch(err => {
 		// 	     console.log("Error occured" + err);
 		// 	});
+    this.getUsers();
+  }
 
+  getUsers() {
+  this.xirsysV3.getUsers()
+  .then(data => {
+    console.log(data);
+    });
   }
 
 }

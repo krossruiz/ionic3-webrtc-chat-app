@@ -7,6 +7,8 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
+import { HttpClientModule } from '@angular/common/http';
+import { XirsysV3Provider } from '../providers/xirsys-v3/xirsys-v3';
 
 @NgModule({
   declarations: [
@@ -15,6 +17,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions';
   ],
   imports: [
     BrowserModule,
+		HttpClientModule,
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
@@ -26,7 +29,8 @@ import { AndroidPermissions } from '@ionic-native/android-permissions';
     StatusBar,
     SplashScreen,
 		AndroidPermissions,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    XirsysV3Provider
   ]
 })
 export class AppModule {}
