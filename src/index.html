@@ -16,6 +16,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
   <!-- cordova.js required for cordova apps (remove if not needed) -->
+	<script>
+		window.navigator2 = window.navigator;
+		console.log(Object.keys(window.navigator2));
+	</script>
   <script src="cordova.js"></script>
 
   <!-- un-comment this code to enable service worker
