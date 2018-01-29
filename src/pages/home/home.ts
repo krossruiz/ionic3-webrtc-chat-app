@@ -71,6 +71,10 @@ export class HomePage {
     this.sessionMenuClass = 'session-menu-open';
   }
 
+  sessionMenuClose(){
+    this.sessionMenuClass = 'session-menu-close';
+  }
+
   getUsers() {
   this.xirsysV3.getUsers()
   .then(data => {

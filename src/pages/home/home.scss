@@ -60,6 +60,16 @@ page-home {
     height: 100vh;
     background-color: purple;
     z-index: 2;
+
+    .x-exit-button{
+      width: 30px;
+      height: 30px;
+      background-color: red;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+
     #users-bubbles{
       display: flex;
       flex-direction: column;
@@ -70,13 +80,20 @@ page-home {
         display: flex;
         flex-direction: row;
         height: 10%;
-        .user-bubble{
+        .user-bubble-wrapper{
           display: flex;
           align-items: center;
           justify-content: center;
           width: 20%;
           height: 100%;
-          background-color: blue;
+          .user-bubble{
+            text-align: center;
+            background-color: lime;
+            width: 40px;
+            height: 40px;
+            padding: 10px;
+            border-radius: 20px;
+          }
         }
       }
     }
@@ -88,12 +105,27 @@ page-home {
     animation-fill-mode: forwards;
   }
 
+  .session-menu-close{
+    animation-name: session-menu-close-anim;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+  }
+
   @keyframes session-menu-open-anim{
     0%{
       transform: translateY(0%);
     }
     100%{
       transform: translateY(-100%);
+    }
+  }
+
+  @keyframes session-menu-close-anim{
+    0%{
+      transform: translateY(-100%);
+    }
+    100%{
+      transform: translateY(0%);
     }
   }
 }
