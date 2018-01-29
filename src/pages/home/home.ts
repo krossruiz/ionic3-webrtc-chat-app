@@ -15,6 +15,7 @@ export class HomePage {
 	// peerConnection = null;
 
   sessionMenuClass: string = '';
+  xExitButtonClass: string = '';
 
   constructor(
 		public navCtrl: NavController,
@@ -69,10 +70,12 @@ export class HomePage {
 
   sessionMenuOpen(){
     this.sessionMenuClass = 'session-menu-open';
+    this.xExitButtonClass = 'x-exit-button-active';
   }
 
   sessionMenuClose(){
     this.sessionMenuClass = 'session-menu-close';
+    this.xExitButtonClass = 'x-exit-button-inactive';
   }
 
   getUsers() {

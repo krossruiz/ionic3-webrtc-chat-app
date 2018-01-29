@@ -14,7 +14,8 @@ page-home {
       align-items: center;
       justify-content: center;
       height: 10%;
-      background-color: #89cdd0;
+      // background-color:  #89cdd0;
+      background-color: #7CC142;
       #switch-camera-button{
         height: 80%;
       }
@@ -38,13 +39,15 @@ page-home {
       align-items: center;
       justify-content: center;
       height: 10%;
-      background-color:  #89cdd0;
+      // background-color:  #89cdd0;
+      background-color: #7CC142;
       #create-session-button{
-        border-color: transparent;
+        border-color: white;
+        border-style: solid;
+        background-color: transparent;
         border-radius: 10px;
         color: white;
         font-weight: bold;
-        background-color: pink;
         height: 80%;
         width: 50%;
       }
@@ -55,59 +58,78 @@ page-home {
   #session-menu{
     display: flex;
     align-items: center;
-    justify-content: center;
     flex-direction: column;
     height: 100vh;
-    background-color: purple;
     z-index: 2;
+    background-color:rgba(1.0, 1.0, 1.0, 0.5);
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
 
-    .x-exit-button{
-      width: 30px;
-      height: 30px;
-      background-color: red;
-      position: absolute;
-      top: 10px;
-      left: 10px;
-    }
-
-    #users-bubbles{
-      display: flex;
-      flex-direction: column;
-      height: 90%;
-      width: 80%;
-      background-color: white;
-      .users-bubbles-row{
+    #available-users-header{
+      width: 100%;
+      height: 15%;
+      #return-to-live-content-button{
+        width: 100%;
+        background-color: red;
+        height: 50%;
         display: flex;
-        flex-direction: row;
-        height: 10%;
-        .user-bubble-wrapper{
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 20%;
-          height: 100%;
-          .user-bubble{
-            text-align: center;
-            background-color: lime;
-            width: 40px;
-            height: 40px;
-            padding: 10px;
-            border-radius: 20px;
-          }
-        }
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        border-top-right-radius: 20px;
+        border-top-left-radius: 20px;
+      }
+      #available-users-title{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 50%;
+        color: #7CC142;
+        font-weight: bold;
+        font-size: 1.2em;
+        width: 100%;
       }
     }
+
+
+    #available-users-button{
+      height: 10%;
+    }
+
+    #available-users-list{
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      width: 100%;
+      flex-wrap: wrap;
+      .available-user-list-item{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 30px;
+        width: 20%;
+        background-color:rgba(124.0, 193.0, 66.0, 0.75);
+        margin-left: 2%;
+        margin-right: 2%;
+        margin-bottom: 3%;
+        color: white;
+        font-weight: bold;
+        border-radius: 20px;
+      }
+    }
+
   }
 
   .session-menu-open{
     animation-name: session-menu-open-anim;
-    animation-duration: 1s;
+    animation-duration: 0.2s;
     animation-fill-mode: forwards;
   }
 
   .session-menu-close{
     animation-name: session-menu-close-anim;
-    animation-duration: 1s;
+    animation-duration: 0.2s;
     animation-fill-mode: forwards;
   }
 
@@ -116,13 +138,13 @@ page-home {
       transform: translateY(0%);
     }
     100%{
-      transform: translateY(-100%);
+      transform: translateY(-50%);
     }
   }
 
   @keyframes session-menu-close-anim{
     0%{
-      transform: translateY(-100%);
+      transform: translateY(-50%);
     }
     100%{
       transform: translateY(0%);

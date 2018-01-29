@@ -18,46 +18,24 @@
 	   <video id="user-video-element" autoplay></video>
   </div>
   <div id="session-managment-area">
-    <input type="button" id="create-session-button" value="Begin Session" (click)='sessionMenuOpen();'/>
+    <input type="button" id="create-session-button" value="Matchmaking" (click)='sessionMenuOpen();'/>
   </div>
 </div>
 <div id="session-menu" [class]="sessionMenuClass">
-  <input type="button" class="x-exit-button" (click)='sessionMenuClose()'/>
-  <div id="users-bubbles">
-    <div class="users-bubbles-row">
-      <div class="user-bubble-wrapper">
-        <div class="user-bubble">1</div>
-      </div>
-      <div class="user-bubble-wrapper">
-        <div class="user-bubble">2</div>
-      </div>
-      <div class="user-bubble-wrapper">
-        <div class="user-bubble">3</div>
-      </div>
-      <div class="user-bubble-wrapper">
-        <div class="user-bubble">4</div>
-      </div>
-      <div class="user-bubble-wrapper">
-        <div class="user-bubble">5</div>
-      </div>
+
+  <div id="available-users-header">
+    <div id="return-to-live-content-button" (click)='sessionMenuClose()'>
+      Close
     </div>
-    <div class="users-bubbles-row">
-      <div class="user-bubble-wrapper">
-        <div class="user-bubble">6</div>
-      </div>
-      <div class="user-bubble-wrapper">
-        <div class="user-bubble">7</div>
-      </div>
-      <div class="user-bubble-wrapper">
-        <div class="user-bubble">8</div>
-      </div>
-      <div class="user-bubble-wrapper">
-        <div class="user-bubble">9</div>
-      </div>
-      <div class="user-bubble-wrapper">
-        <div class="user-bubble">10</div>
-      </div>
-    </div>
+    <div id="available-users-title">Available Users</div>
+  </div>
+  <div id="available-users-list">
+    <div class="available-user-list-item">John</div>
+    <div class="available-user-list-item">Juan</div>
+    <div class="available-user-list-item">Adon</div>
+    <div class="available-user-list-item">Adon</div>
+    <div class="available-user-list-item">Adon</div>
+    <div class="available-user-list-item">Adon</div>
   </div>
 </div>
 	<!-- <div>
