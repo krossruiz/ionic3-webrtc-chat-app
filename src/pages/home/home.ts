@@ -14,6 +14,8 @@ export class HomePage {
   //
 	// peerConnection = null;
 
+  sessionMenuClass: string = '';
+
   constructor(
 		public navCtrl: NavController,
     private androidPermissions: AndroidPermissions,
@@ -43,6 +45,7 @@ export class HomePage {
         console.log(e);
         console.log("EOMESSAGE");
       });
+
 		//const SERVER_ADDRESS = 'http://5cf0c64f.ngrok.io';
 		// const PC_Configuration = {};
 		//this.sock = socketio(SERVER_ADDRESS);
@@ -62,6 +65,10 @@ export class HomePage {
 		// 	     console.log("Error occured" + err);
 		// 	});
     this.getUsers();
+  }
+
+  sessionMenuOpen(){
+    this.sessionMenuClass = 'session-menu-open';
   }
 
   getUsers() {

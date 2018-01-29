@@ -1,25 +1,44 @@
-<ion-header>
-  <ion-navbar>
+<!-- <ion-header>
+  <ion-navbar style="
+    height: 5vh;
+    ">
     <ion-title>
 			Xirsys Chat
     </ion-title>
   </ion-navbar>
-</ion-header>
+</ion-header> -->
+<!-- background-color: #7CC142; -->
 
-<ion-content padding>
-	<div style="
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  ">
-		<h1></h1>
-		<video
-      id="user-video-element"
-      width="200"
-      height="400"
-      autoplay
-    ></video>
-	</div>
+
+<div id="live-content">
+  <div id="camera-control-area">
+    <input id="switch-camera-button" type="image" src="../../assets/imgs/flip-cam.png"/>
+  </div>
+  <div id="video-feed-area">
+	   <video id="user-video-element" autoplay></video>
+  </div>
+  <div id="session-managment-area">
+    <input type="button" id="create-session-button" value="Begin Session" (click)='sessionMenuOpen();'/>
+  </div>
+</div>
+<div id="session-menu" [class]="sessionMenuClass">
+  <div id="users-bubbles">
+    <div class="users-bubbles-row">
+      <div class="user-bubble">1</div>
+      <div class="user-bubble">2</div>
+      <div class="user-bubble">3</div>
+      <div class="user-bubble">4</div>
+      <div class="user-bubble">5</div>
+    </div>
+    <div class="users-bubbles-row">
+      <div class="user-bubble">6</div>
+      <div class="user-bubble">7</div>
+      <div class="user-bubble">8</div>
+      <div class="user-bubble">9</div>
+      <div class="user-bubble">10</div>
+    </div>
+  </div>
+</div>
 	<!-- <div>
 		<input
 			type="button"
@@ -52,4 +71,3 @@
 			"
 		/>
 	</div> -->
-</ion-content>

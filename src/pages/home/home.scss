@@ -1,3 +1,99 @@
 page-home {
+  #live-content{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    animation-name: session-menu-open;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-delay: 2s;
 
+    #camera-control-area{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 10%;
+      background-color: #89cdd0;
+      #switch-camera-button{
+        height: 80%;
+      }
+    }
+
+    #video-feed-area{
+      display: flex;
+      flex-direction: column;
+      background-color: black;
+      align-items: center;
+      justify-content: center;
+      height: 80%;
+      #user-video-element {
+        max-width: 100%;
+        max-height: 80%;
+      }
+    }
+
+    #session-managment-area{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 10%;
+      background-color:  #89cdd0;
+      #create-session-button{
+        border-color: transparent;
+        border-radius: 10px;
+        color: white;
+        font-weight: bold;
+        background-color: pink;
+        height: 80%;
+        width: 50%;
+      }
+    }
+
+  }
+
+  #session-menu{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+    background-color: purple;
+    z-index: 2;
+    #users-bubbles{
+      display: flex;
+      flex-direction: column;
+      height: 90%;
+      width: 80%;
+      background-color: white;
+      .users-bubbles-row{
+        display: flex;
+        flex-direction: row;
+        height: 10%;
+        .user-bubble{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 20%;
+          height: 100%;
+          background-color: blue;
+        }
+      }
+    }
+  }
+
+  .session-menu-open{
+    animation-name: session-menu-open-anim;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+  }
+
+  @keyframes session-menu-open-anim{
+    0%{
+      transform: translateY(0%);
+    }
+    100%{
+      transform: translateY(-100%);
+    }
+  }
 }
