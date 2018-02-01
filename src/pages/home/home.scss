@@ -10,14 +10,29 @@ page-home {
 
     #camera-control-area{
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
       height: 10%;
       // background-color:  #89cdd0;
       background-color: #7CC142;
-      #switch-camera-button{
+      #nameEdit{
+        color: white;
+        width: 70%;
         height: 80%;
+        margin-right: 8%;
+        padding: 10px;
+        font-size: 1.2em;
+        font-weight: bold;
+        background-color: transparent;
+        border-color: white;
+        border-style: solid;
+        border-width: medium;
+        border-radius: 10px;
+      }
+      #switch-camera-button{
+        padding: 10px;
+        width: 20%;
       }
     }
 
@@ -32,6 +47,17 @@ page-home {
         max-width: 100%;
         max-height: 80%;
       }
+      #user-feed-label{
+        color: lime;
+        font-size: 1.3em;
+        position: relative;
+        display: flex;
+        display: inline-flex;
+        bottom: 2.5em;
+        left: 0.35em;
+        padding: 10px;
+        background-color: rgba(0,0,0,0.75);
+      }
     }
 
     #session-managment-area{
@@ -42,12 +68,13 @@ page-home {
       // background-color:  #89cdd0;
       background-color: #7CC142;
       #create-session-button{
-        border-color: white;
+        border-color: transparent;
         border-style: solid;
-        background-color: transparent;
+        background-color: red;
         border-radius: 10px;
         color: white;
         font-weight: bold;
+        font-size: 1.5em;
         height: 80%;
         width: 50%;
       }

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { XirsysV3Provider } from '../../providers/xirsys-v3/xirsys-v3';
-//import * as socketio from 'socket.io-client';
+import * as socketio from 'socket.io-client';
 
 @Component({
   selector: 'page-home',
@@ -10,62 +10,69 @@ import { XirsysV3Provider } from '../../providers/xirsys-v3/xirsys-v3';
 })
 export class HomePage {
 
-	// sock = null;
-  //
-	// peerConnection = null;
-
+  sock: any;
+	peerConnection: any;
+  serverPeerConnection: any;
   sessionMenuClass: string = '';
   xExitButtonClass: string = '';
+  SERVER_ADDRESS: string =  "http://593f2a20.ngrok.io";
+  username: string = "";
+  messageDataChannel: any;
+  serverSocketActions: any;
 
   constructor(
 		public navCtrl: NavController,
     private androidPermissions: AndroidPermissions,
     public xirsysV3: XirsysV3Provider
-	) {
-    console.log("hello??");
+	){
+    this.checkPermissions();
+    this.connectToNodeServer();
+    this.configureServerSocket();
+    this.getCameraStream();
+    this.getUsers();
+  }
 
-    this.androidPermissions.requestPermissions([this.androidPermissions.PERMISSION.CAMERA, this.androidPermissions.PERMISSION.RECORD_AUDIO]);
+  connectToNodeServer(){
+    this.sock = socketio(this.SERVER_ADDRESS);
+  }
+
+  checkPermissions(){
+    this.androidPermissions.requestPermissions(
+      [this.androidPermissions.PERMISSION.CAMERA,
+        this.androidPermissions.PERMISSION.RECORD_AUDIO
+      ]
+    );
+
     this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.CAMERA).then(
       success => console.log("Hey you have permission"),
-      err => {console.log("Uh oh"); this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA);}
+      err => {
+        console.log("Uh oh, looks like you don't have permission");
+        this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.CAMERA);
+      }
     );
 
     this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.RECORD_AUDIO).then(
       success => console.log("Hey you have permission"),
-      err => {console.log("Uh oh"); this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.RECORD_AUDIO);}
+      err => {
+        console.log("Uh oh, looks like you don't have permission");
+        this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.RECORD_AUDIO);
+      }
     );
+  }
 
+  getCameraStream(){
     navigator.mediaDevices.getUserMedia({video: true, audio: false})
       .then(stream => {
-        console.log("got here");
         let video = document.getElementById('user-video-element');
         (<HTMLVideoElement>video).srcObject = stream;
       })
       .catch(e => {
-        console.log("MESSAGE");
         console.log(e);
-        console.log("EOMESSAGE");
       });
+  }
 
-		//const SERVER_ADDRESS = 'http://5cf0c64f.ngrok.io';
-		// const PC_Configuration = {};
-		//this.sock = socketio(SERVER_ADDRESS);
-		// this.peerConnection = new RTCPeerConnection(PC_Configuration);
-
-		//this.sock.on('omae_wa_mou_shindeiru', () => {
-		//	console.log("NANI?")
-		//});
-
-		// navigator.mediaDevices.getUserMedia({video: true, audio: false})
-		//   .then( stream => {
-		// 	     let video = document.getElementById('user-video-element');
-		// 			 (<HTMLVideoElement>video).srcObject = stream;
-    //        console.log(video.srcObject);
-		// 	})
-		// 	.catch(err => {
-		// 	     console.log("Error occured" + err);
-		// 	});
-    this.getUsers();
+  displayNameChange(updatedDisplayName){
+    this.serverSocketActions.updateDisplayName(updatedDisplayName);
   }
 
   sessionMenuOpen(){
@@ -76,6 +83,73 @@ export class HomePage {
   sessionMenuClose(){
     this.sessionMenuClass = 'session-menu-close';
     this.xExitButtonClass = 'x-exit-button-inactive';
+  }
+
+  createPeerConnection(){
+    this.peerConnection = new webkitRTCPeerConnection({});
+    this.peerConnection.onicecandidate = this.serverSocketActions.onIceCandidate;
+    this.peerConnection.ondatachannel = this.onDataChannel;
+  }
+
+  createMessagingDataChannel(){
+    let self = this;
+    let messageDataCHannelOptions = {
+      ordered: true,
+      maxRetransmitTime: 3000
+    };
+  }
+
+  onDataChannel(event){
+    event.channel.onmessage = (ev) => {
+      try{
+        console.log(ev.data);
+      }
+      catch(e){
+        console.log(e);
+      }
+    };
+  }
+
+  createOffer(){
+    this.peerConnection.createOffer()
+      .then( (offer) => {
+        this.peerConnection.setLocalDescription(offer);
+        this.serverSocketActions.createInitialOffering(offer);
+      });
+  }
+
+  configureServerSocket(){
+
+    this.serverSocketActions = {
+      requestSession: (remoteUserId) => {
+        this.sock.emit('request-session', remoteUserId);
+      },
+      updateDisplayName: (updatedDisplayName) => {
+        this.sock.emit('updated-display-name', updatedDisplayName);
+      },
+      createInitialOffering: (offer) => {
+        this.sock.emit('initial-offering', offer);
+      },
+      onIceCandidate: (event) => {
+        this.sock.emit('candidate', event.candidate);
+      }
+    };
+
+    this.sock.on('initial-offering-response', remoteOffer => {
+      this.peerConnection.setRemoteDescription(remoteOffer)
+        .then( (answer) => {
+          this.peerConnection.setLocalDescription(answer);
+          this.sock.emit('answer', answer);
+        });
+    });
+
+    this.sock.on('answer-given', (remoteAnswer) => {
+      this.peerConnection.setRemoteDescription(remoteAnswer)
+        .then(() => {
+          console.log(this.peerConnection);
+        });
+    });
+
   }
 
   getUsers() {

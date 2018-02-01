@@ -12,10 +12,17 @@
 
 <div id="live-content">
   <div id="camera-control-area">
+    <input type="text" id="nameEdit"
+      placeholder="Enter your display name"
+      [(ngModel)]="username"
+      (ngModelChange)="displayNameChange($event)"/>
     <input id="switch-camera-button" type="image" src="../../assets/imgs/flip-cam.png"/>
   </div>
   <div id="video-feed-area">
-	   <video id="user-video-element" autoplay></video>
+     <div>
+	      <video id="user-video-element" autoplay></video>
+        <div id="user-feed-label" *ngIf="username as username; else user">{{username}}'s Feed</div>
+      </div>
   </div>
   <div id="session-managment-area">
     <input type="button" id="create-session-button" value="Matchmaking" (click)='sessionMenuOpen();'/>
