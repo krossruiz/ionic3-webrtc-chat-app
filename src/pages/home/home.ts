@@ -76,6 +76,15 @@ export class HomePage {
     this.serverSocketActions.updateDisplayName(updatedDisplayName);
   }
 
+  displayNameSubstringer(displayName){
+    if(displayName.length < 12){
+      return displayName;
+    }
+    else{
+      return displayName.substring(0,11) + "...";
+    }
+  }
+
   sessionMenuOpen(){
     this.sessionMenuClass = 'session-menu-open';
     this.xExitButtonClass = 'x-exit-button-active';
