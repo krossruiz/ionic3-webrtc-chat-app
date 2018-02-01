@@ -36,13 +36,15 @@
     </div>
     <div id="available-users-title">Available Users</div>
   </div>
-  <div id="available-users-list">
-    <div class="available-user-list-item">John</div>
-    <div class="available-user-list-item">Juan</div>
-    <div class="available-user-list-item">Adon</div>
-    <div class="available-user-list-item">Adon</div>
-    <div class="available-user-list-item">Adon</div>
-    <div class="available-user-list-item">Adon</div>
+  <div
+    id="available-users-list"
+    *ngIf="activeUsers != null"
+  >
+    <div
+      *ngFor="let user of activeUsers"
+      class="available-user-list-item">
+      {{user.displayName}}
+    </div>
   </div>
 </div>
 	<!-- <div>

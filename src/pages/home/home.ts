@@ -15,10 +15,11 @@ export class HomePage {
   serverPeerConnection: any;
   sessionMenuClass: string = '';
   xExitButtonClass: string = '';
-  SERVER_ADDRESS: string =  "http://593f2a20.ngrok.io";
+  SERVER_ADDRESS: string =  "https://593f2a20.ngrok.io";
   username: string = "";
   messageDataChannel: any;
   serverSocketActions: any;
+  activeUsers = [];
 
   constructor(
 		public navCtrl: NavController,
@@ -134,6 +135,14 @@ export class HomePage {
         this.sock.emit('candidate', event.candidate);
       }
     };
+
+    this.sock.on('display-names-updated', (activeUsers) => {
+      let i = 0;
+      for(let user in activeUsers.users){
+        this.activeUsers[i] = activeUsers.users[user];
+        i++;
+      };
+    });
 
     this.sock.on('initial-offering-response', remoteOffer => {
       this.peerConnection.setRemoteDescription(remoteOffer)
