@@ -16,23 +16,34 @@ page-home {
       height: 10%;
       // background-color:  #89cdd0;
       background-color: #7CC142;
-      #nameEdit{
-        color: white;
+      #name-edit-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 70%;
-        height: 80%;
-        margin-right: 8%;
-        padding: 10px;
-        font-size: 1.2em;
-        font-weight: bold;
-        background-color: transparent;
-        border-color: white;
-        border-style: solid;
-        border-width: medium;
-        border-radius: 10px;
+        #nameEdit{
+          color: white;
+          width: 95%;
+          height: 80%;
+          padding: 10px;
+          font-size: 1.2em;
+          font-weight: bold;
+          background-color: transparent;
+          border-color: white;
+          border-style: solid;
+          border-width: medium;
+          border-radius: 10px;
+        }
       }
-      #switch-camera-button{
-        padding: 10px;
-        width: 20%;
+      #switch-camera-button-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30%;
+        #switch-camera-button{
+          padding: 10px;
+          width: 80%;
+        }
       }
     }
 

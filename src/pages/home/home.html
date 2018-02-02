@@ -12,11 +12,15 @@
 
 <div id="live-content">
   <div id="camera-control-area">
-    <input type="text" id="nameEdit"
-      placeholder="Enter your display name"
-      [(ngModel)]="username"
-      (ngModelChange)="displayNameChange($event)"/>
-    <input id="switch-camera-button" type="image" src="../../assets/imgs/flip-cam.png"/>
+      <div id="name-edit-container">
+        <input type="text" id="nameEdit"
+        placeholder="Enter your display name"
+        [(ngModel)]="username"
+        (ngModelChange)="displayNameChange($event)"/>
+      </div>
+      <div id="switch-camera-button-container">
+        <input id="switch-camera-button" type="image" src="../../assets/imgs/flip-cam.png"/>
+      </div>
   </div>
   <div id="video-feed-area">
      <div id="video-feeds">
