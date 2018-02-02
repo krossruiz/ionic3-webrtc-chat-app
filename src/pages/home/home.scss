@@ -38,14 +38,25 @@ page-home {
 
     #video-feed-area{
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       background-color: black;
       align-items: center;
       justify-content: center;
       height: 80%;
-      #user-video-element {
-        max-width: 100%;
-        max-height: 80%;
+      #video-feeds{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        background-color: #7CC142;
+        #user-video-element {
+          height: 50%;
+        }
+        #remote-video-element{
+          height: 50%;
+        }
       }
       #user-feed-label{
         color: lime;

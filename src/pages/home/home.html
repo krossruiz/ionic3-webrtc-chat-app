@@ -19,9 +19,10 @@
     <input id="switch-camera-button" type="image" src="../../assets/imgs/flip-cam.png"/>
   </div>
   <div id="video-feed-area">
-     <div>
+     <div id="video-feeds">
 	      <video id="user-video-element" autoplay></video>
-        <div id="user-feed-label" *ngIf="username as username; else user">{{username}}'s Feed</div>
+        <video id="remote-video-element" autoplay></video>
+        <!-- <div id="user-feed-label" *ngIf="username as username; else user">{{username}}'s Feed</div> -->
       </div>
   </div>
   <div id="session-managment-area">
@@ -43,7 +44,7 @@
     <div
       *ngFor="let user of activeUsers"
       class="available-user-list-item"
-      (click)="requestSession(user.displayName)">
+      (click)="handleAvailableClientClick(user.displayName)">
       {{displayNameSubstringer(user.displayName)}}
     </div>
   </div>

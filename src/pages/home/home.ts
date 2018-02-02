@@ -27,11 +27,11 @@ export class HomePage {
     private androidPermissions: AndroidPermissions,
     public xirsysV3: XirsysV3Provider
 	){
+    this.createPeerConnection();
+    this.createMessageDataChannel();
     this.checkPermissions();
     this.connectToNodeServer();
     this.configureServerSocket();
-    this.createPeerConnection();
-    this.createMessageDataChannel();
     this.getCameraStream();
     this.getUsers();
   }
@@ -69,6 +69,7 @@ export class HomePage {
       .then(stream => {
         let video = document.getElementById('user-video-element');
         (<HTMLVideoElement>video).srcObject = stream;
+        this.peerConnection.addStream(stream);
       })
       .catch(e => {
         console.log(e);
@@ -101,7 +102,6 @@ export class HomePage {
   createPeerConnection(){
     this.peerConnection = new webkitRTCPeerConnection({});
     this.peerConnection.onicecandidate = (event) => {
-      console.log("ICE");
       if(event.candidate){
         let candidatePackage = {
           candidate: event.candidate,
@@ -122,6 +122,11 @@ export class HomePage {
           console.log(e);
         }
       };
+    };
+
+    this.peerConnection.onaddstream = (event) => {
+      let remoteVideoEl:any = document.getElementById('remote-video-element');
+      remoteVideoEl.srcObject = event.stream;
     };
 
     this.peerConnection.oniceconnectionstatechange = (e) => {
@@ -151,23 +156,24 @@ export class HomePage {
     }
   }
 
+  handleAvailableClientClick(remoteUserId){
+    this.sessionMenuClose();
+    this.requestSession(remoteUserId);
+  }
+
   requestSession(remoteUserId){
-    console.log("REQ SESS RAN");
     this.serverSocketActions.requestSession(remoteUserId);
   }
 
   createOffer(destinationClientId){
     this.peerConnection.createOffer()
       .then( (offer) => {
-        console.log("pc.createOffer offer");
-        console.log(offer);
         let initialOfferingPackage = {
           initialOffer: offer,
           destinationClientId: destinationClientId
         }
         this.peerConnection.setLocalDescription(offer);
         this.serverSocketActions.createInitialOffering(initialOfferingPackage);
-        console.log("transmitted initial offering")
       });
   }
 
@@ -175,7 +181,6 @@ export class HomePage {
 
     this.serverSocketActions = {
       requestSession: (remoteUserId) => {
-        console.log("SERV SOCK REQ SESS RAN");
         this.sock.emit('request-session', remoteUserId);
       },
       updateDisplayName: (updatedDisplayName) => {
@@ -201,22 +206,14 @@ export class HomePage {
     });
 
     this.sock.on('session-confirmed', (remoteClientId) => {
-      console.log("SESS CONF RAN");
-      console.log(remoteClientId);
-      console.log(this.createOffer);
       this.remoteId = remoteClientId;
       this.createOffer(remoteClientId);
     });
 
     this.sock.on('initial-offering-response', (response) => {
-      console.log("SIG: Initial Offer Response");
-      console.log(response);
-
       const { initialOffer, senderClientId } = response;
-      console.log(initialOffer);
       this.peerConnection.setRemoteDescription(initialOffer)
         .then(() => {
-          console.log("This ran?")
           this.peerConnection.createAnswer().then((answer) => {
             this.peerConnection.setLocalDescription(answer);
             const answerPackage = {
@@ -230,10 +227,6 @@ export class HomePage {
 
     this.sock.on('answer-given', (response) => {
       const { answer } = response;
-      // const { senderClientId } = response;
-      console.log("SIG: Answer given");
-      console.log(response);
-
       this.peerConnection.setRemoteDescription(answer)
         .then(() => {
           console.log(this.peerConnection);
@@ -241,9 +234,7 @@ export class HomePage {
     });
 
     this.sock.on('remote-sending-ice-candidate', (candidate) => {
-      console.log("AYY");
       this.peerConnection.addIceCandidate(candidate);
-      console.log(this.peerConnection);
     });
 
   }
