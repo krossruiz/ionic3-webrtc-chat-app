@@ -15,11 +15,12 @@ export class HomePage {
   serverPeerConnection: any;
   sessionMenuClass: string = '';
   xExitButtonClass: string = '';
-  SERVER_ADDRESS: string =  "https://593f2a20.ngrok.io";
+  SERVER_ADDRESS: string =  "https://741965ca.ngrok.io";
   username: string = "";
   messageDataChannel: any;
   serverSocketActions: any;
   activeUsers = [];
+  remoteId: string;
 
   constructor(
 		public navCtrl: NavController,
@@ -29,6 +30,8 @@ export class HomePage {
     this.checkPermissions();
     this.connectToNodeServer();
     this.configureServerSocket();
+    this.createPeerConnection();
+    this.createMessageDataChannel();
     this.getCameraStream();
     this.getUsers();
   }
@@ -97,34 +100,74 @@ export class HomePage {
 
   createPeerConnection(){
     this.peerConnection = new webkitRTCPeerConnection({});
-    this.peerConnection.onicecandidate = this.serverSocketActions.onIceCandidate;
-    this.peerConnection.ondatachannel = this.onDataChannel;
+    this.peerConnection.onicecandidate = (event) => {
+      console.log("ICE");
+      if(event.candidate){
+        let candidatePackage = {
+          candidate: event.candidate,
+          destinationClientId: this.remoteId
+        }
+        this.serverSocketActions.onIceCandidate(candidatePackage);
+      }
+      else{
+
+      }
+    };
+    this.peerConnection.ondatachannel = (event) => {
+      event.channel.onmessage = (ev) => {
+        try{
+          console.log(ev.data);
+        }
+        catch(e){
+          console.log(e);
+        }
+      };
+    };
+
+    this.peerConnection.oniceconnectionstatechange = (e) => {
+      console.log("STATE CHANGE");
+      console.log(this.peerConnection.iceConnectionState);
+    }
   }
 
-  createMessagingDataChannel(){
-    let self = this;
-    let messageDataCHannelOptions = {
+  createMessageDataChannel(){
+    const messageDataChannelOptions = {
       ordered: true,
       maxRetransmitTime: 3000
     };
-  }
-
-  onDataChannel(event){
-    event.channel.onmessage = (ev) => {
-      try{
-        console.log(ev.data);
-      }
-      catch(e){
-        console.log(e);
-      }
+    let messagesDataChannel = this.peerConnection.createDataChannel("messages", messageDataChannelOptions);
+    console.log("DATA CHANNEL CREATED");
+    messagesDataChannel.onerror = (error) => {
+      console.log(error);
     };
+    messagesDataChannel.onmessage = (event) => {
+      console.log(event.data);
+    };
+    messagesDataChannel.onopen = () => {
+      messagesDataChannel.send("HEWO WULD");
+    }
+    messagesDataChannel.onclose = () => {
+      console.log("CHANNEL CLOSED");
+    }
   }
 
-  createOffer(){
+  requestSession(remoteUserId){
+    console.log("REQ SESS RAN");
+    this.serverSocketActions.requestSession(remoteUserId);
+  }
+
+  createOffer(destinationClientId){
     this.peerConnection.createOffer()
       .then( (offer) => {
+        console.log("pc.createOffer offer");
+        console.log(offer);
+        let initialOfferingPackage = {
+          initialOffer: offer,
+          destinationClientId: destinationClientId
+        }
         this.peerConnection.setLocalDescription(offer);
-        this.serverSocketActions.createInitialOffering(offer);
+        this.serverSocketActions.createInitialOffering(initialOfferingPackage);
+        console.log("transmitted initial offering")
       });
   }
 
@@ -132,16 +175,20 @@ export class HomePage {
 
     this.serverSocketActions = {
       requestSession: (remoteUserId) => {
+        console.log("SERV SOCK REQ SESS RAN");
         this.sock.emit('request-session', remoteUserId);
       },
       updateDisplayName: (updatedDisplayName) => {
         this.sock.emit('updated-display-name', updatedDisplayName);
       },
-      createInitialOffering: (offer) => {
-        this.sock.emit('initial-offering', offer);
+      createInitialOffering: (initialOfferingPackage) => {
+        this.sock.emit('initial-offering', initialOfferingPackage);
       },
-      onIceCandidate: (event) => {
-        this.sock.emit('candidate', event.candidate);
+      transmitAnswerPackage: (answerPackage) => {
+        this.sock.emit('answer', answerPackage);
+      },
+      onIceCandidate: (candidatePackage) => {
+        this.sock.emit('ice-candidate', candidatePackage);
       }
     };
 
@@ -153,19 +200,50 @@ export class HomePage {
       };
     });
 
-    this.sock.on('initial-offering-response', remoteOffer => {
-      this.peerConnection.setRemoteDescription(remoteOffer)
-        .then( (answer) => {
-          this.peerConnection.setLocalDescription(answer);
-          this.sock.emit('answer', answer);
+    this.sock.on('session-confirmed', (remoteClientId) => {
+      console.log("SESS CONF RAN");
+      console.log(remoteClientId);
+      console.log(this.createOffer);
+      this.remoteId = remoteClientId;
+      this.createOffer(remoteClientId);
+    });
+
+    this.sock.on('initial-offering-response', (response) => {
+      console.log("SIG: Initial Offer Response");
+      console.log(response);
+
+      const { initialOffer, senderClientId } = response;
+      console.log(initialOffer);
+      this.peerConnection.setRemoteDescription(initialOffer)
+        .then(() => {
+          console.log("This ran?")
+          this.peerConnection.createAnswer().then((answer) => {
+            this.peerConnection.setLocalDescription(answer);
+            const answerPackage = {
+              answer: answer,
+              destinationClientId: senderClientId
+            }
+            this.serverSocketActions.transmitAnswerPackage(answerPackage);
+          })
         });
     });
 
-    this.sock.on('answer-given', (remoteAnswer) => {
-      this.peerConnection.setRemoteDescription(remoteAnswer)
+    this.sock.on('answer-given', (response) => {
+      const { answer } = response;
+      // const { senderClientId } = response;
+      console.log("SIG: Answer given");
+      console.log(response);
+
+      this.peerConnection.setRemoteDescription(answer)
         .then(() => {
           console.log(this.peerConnection);
         });
+    });
+
+    this.sock.on('remote-sending-ice-candidate', (candidate) => {
+      console.log("AYY");
+      this.peerConnection.addIceCandidate(candidate);
+      console.log(this.peerConnection);
     });
 
   }

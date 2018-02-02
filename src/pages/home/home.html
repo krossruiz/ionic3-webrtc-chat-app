@@ -42,7 +42,8 @@
   >
     <div
       *ngFor="let user of activeUsers"
-      class="available-user-list-item">
+      class="available-user-list-item"
+      (click)="requestSession(user.displayName)">
       {{displayNameSubstringer(user.displayName)}}
     </div>
   </div>
